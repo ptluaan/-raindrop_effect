@@ -2,6 +2,7 @@
  * Fragment shader của hạt mưa, được dùng bởi PIXI.js trong một đối tượng EffectCanvas
  * {{uniforms: {time: {type: string, value: number}, iResolution: {type: string, value: [*]}}, fragment: string}}
  */
+// const alpha = 'https://github.com/ptluaan/-raindrop_effect/blob/main/alpha.png';
 const alpha = 'https://stefanweck.nl/codepen/alpha.png';
 const shine = 'https://stefanweck.nl/codepen/shine.png';
 const background = 'https://stefanweck.nl/codepen/background.jpg';
@@ -49,17 +50,17 @@ const shaderData = {
         //Canvas image data
         uniform sampler2D uSampler;
     
-        //The resolution and coordinates of the current pixel
+        //Độ phân giải và tọa độ của pixel hiện tại
         uniform vec2 iResolution;
         uniform vec2 vTextureSize;
         varying vec2 vTextureCoord;
         
-        //Function to get the vec2 value of the current coordinate
+        //Hàm lấy giá trị vec2 của tọa độ hiện tại
         vec2 texCoord(){
             return vec2(gl_FragCoord.x, iResolution.y - gl_FragCoord.y) / iResolution;
         }
 
-        //Scales the bg up and proportionally to fill the container
+        //Scales bg lên bằng kích thước của container
         vec2 scaledTextureCoordinate(){
             float ratioCanvas = iResolution.x / iResolution.y;
             float ratioImage = vTextureSize.x / vTextureSize.y;
@@ -79,7 +80,7 @@ const shaderData = {
             return (texCoord() + offset) / scale;
         }
         
-        //Alpha-blends two colors
+        //Alpha- trộn 2 màu
         vec4 blend(vec4 bg, vec4 fg){
             vec3 bgm = bg.rgb * bg.a;
             vec3 fgm = fg.rgb * fg.a;
@@ -101,7 +102,7 @@ const shaderData = {
             return vec2(1.0, 1.0) / iResolution;
         }
         
-        //Get color from fg
+        //lấy màu từ fg
         vec4 fgColor(){
             return texture2D(uSampler, vTextureCoord);
         }
@@ -523,6 +524,9 @@ class DropletManager {
     // Kiểm tra xem khối lượng các giọt có đủ cao để di chuyển không và nếu giọt vẫn chưa chuyển động
     if (droplet.mass < this.options.maximumMassGravity && droplet.dropletVelocity.y === 0 && droplet.dropletVelocity.x === 0) {
       // Có một khả năng giọt bắt đầu chuyển động
+      // if (true) {
+      //   droplet.dropletVelocity.x = Utils.getRandomInt(0.5, 3);
+      // }
       if (Math.random() < 0.01) {
         droplet.dropletVelocity.y = Utils.getRandomInt(0.5, 3);
       }
