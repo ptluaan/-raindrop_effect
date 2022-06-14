@@ -2,11 +2,15 @@
  * Fragment shader của hạt mưa, được dùng bởi PIXI.js trong một đối tượng EffectCanvas
  * {{uniforms: {time: {type: string, value: number}, iResolution: {type: string, value: [*]}}, fragment: string}}
  */
-// const alpha = 'https://github.com/ptluaan/-raindrop_effect/blob/main/alpha.png';
-const alpha = 'https://stefanweck.nl/codepen/alpha.png';
-const shine = 'https://stefanweck.nl/codepen/shine.png';
-const background = 'https://stefanweck.nl/codepen/background.jpg';
-const foreground = 'https://stefanweck.nl/codepen/foreground.jpg';
+
+const alpha = 'https://raw.githubusercontent.com/ptluaan/-raindrop_effect/main/alpha.png';
+const shine = 'https://raw.githubusercontent.com/ptluaan/-raindrop_effect/main/shine.png';
+const background = 'https://raw.githubusercontent.com/ptluaan/-raindrop_effect/main/background.jpg';
+const foreground = 'https://raw.githubusercontent.com/ptluaan/-raindrop_effect/main/foreground.jpg';
+// const alpha = 'https://stefanweck.nl/codepen/alpha.png';
+// const shine = 'https://stefanweck.nl/codepen/shine.png';
+// const background = 'https://stefanweck.nl/codepen/background.jpg';
+// const foreground = 'https://stefanweck.nl/codepen/foreground.jpg';
 
 const shaderData = {
   uniforms: {
@@ -144,13 +148,17 @@ class Application {
   constructor() {
     this.width = window.innerWidth;
     this.height = window.innerHeight;
-
+    // this.loader.defaultQueryString = 'user=me&password=secret';//
     // Xác định nội dung mà PIXI cần tải trước để sử dụng sau này trong application
     this.loader = PIXI.loader.
-    add(alpha).
-    add(shine).
-    add(background).
-    add(foreground).
+    add("_alpha",alpha).
+    add("_shine",shine).
+    add("_background",background).
+    add("_foreground",foreground).
+    // add("./alpha.png").
+    // add("./shine.png").
+    // add("./background.jpg").
+    // add("./foreground.jpg").
     load(() => this.initialize());
   }
 
@@ -162,6 +170,8 @@ class Application {
     // Tạo đối tượng Stat và append nó vào DOM
     this.stats = new Stats();
     this.stats.domElement.style.position = 'absolute';
+    // this.stats.domElement.style.left = '100px';
+    // this.stats.domElement.style.top = '100px';
     this.stats.domElement.style.left = '0px';
     this.stats.domElement.style.top = '0px';
     this.stats.domElement.style.zIndex = '9000';
@@ -237,12 +247,12 @@ class EffectCanvas {
     this.dropletManager = new DropletManager(this.stage, loader);
 
     // Gửi thông tin về các họa tiết và kích thước của họa tiết nền thông qua uniforms tới shader
-    shaderData.uniforms.uTextureDropShine.value = loader.resources[shine].texture;
-    shaderData.uniforms.uTextureBackground.value = loader.resources[background].texture;
-    shaderData.uniforms.uTextureForeground.value = loader.resources[foreground].texture;
+    shaderData.uniforms.uTextureDropShine.value = loader.resources["_shine"].texture;
+    shaderData.uniforms.uTextureBackground.value = loader.resources["_background"].texture;
+    shaderData.uniforms.uTextureForeground.value = loader.resources["_foreground"].texture;
     shaderData.uniforms.vTextureSize.value = [
-    loader.resources[background].texture.width,
-    loader.resources[background].texture.height];
+    loader.resources["_background"].texture.width,
+    loader.resources["_background"].texture.height];
 
 
     // Tạo bộ lọc Pixi sử dụng shader code tùy chỉnh
@@ -402,8 +412,8 @@ class DropletManager {
     this.smallDroplets = [];
     this.largeDroplets = [];
 
-    this.dropletSmallTexture = loader.resources[alpha].texture;
-    this.dropletLargeTexture = loader.resources[alpha].texture;
+    this.dropletSmallTexture = loader.resources["_alpha"].texture;
+    this.dropletLargeTexture = loader.resources["_alpha"].texture;
 
     // Tạo một container cho tất cả các giọt
     this.smallDropletContainer = new DropletPool(Droplet, this.dropletSmallTexture, this.options.poolDroplets.small.min, this.options.poolDroplets.small.max);
